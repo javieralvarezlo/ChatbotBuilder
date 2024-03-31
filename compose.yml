@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  web:
+    image: svelte
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "node"
+    environment:
+      - NODE_ENV=development
+      - TZ=Europe/Madrid
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - 3000:3000
