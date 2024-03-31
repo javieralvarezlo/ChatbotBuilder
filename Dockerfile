@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package*.json .
 RUN npm ci
 COPY . .
+RUN npx prisma migrate dev
 RUN npm run build
 RUN npm prune --production
 
