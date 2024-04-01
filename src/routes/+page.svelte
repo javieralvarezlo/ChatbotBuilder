@@ -11,3 +11,9 @@
     <p>{user.name}</p>
     <p>{user.email}</p>
 {/each}
+<form method="POST">
+    <li>
+        <p>{data.user?.name}, {data.user?.email}</p>
+        <button formaction="/logout" type="submit">Logout</button>
+    </li>
+</form>

@@ -4,40 +4,23 @@ import type { Actions } from "../$types";
 import { getUserByEmail } from "$lib/services/users";
 import { createSession, createSessionCookie, verifyPassword } from "$lib/services/auth";
 
-export const actions: Actions = {
+export const actions = {
 	default: async (event) => {
 		const formData = await event.request.formData();
-		const email = formData.get("email");
-		const password = formData.get("password");
-
-		if (
-			typeof email !== "string" ||
-			email.length < 3 ||
-			email.length > 31 ||
-			!/^[a-z0-9_-]+$/.test(email)
-		) {
-			return fail(400, {
-				message: "Invalid username"
-			});
-		}
-		if (typeof password !== "string" || password.length < 6 || password.length > 255) {
-			return fail(400, {
-				message: "Invalid password"
-			});
-		}
+		const email = formData.get("email")?.toString() || "";
+		const password = formData.get("password")?.toString() || "";
 
 		const existingUser = await getUserByEmail(email);
+
 		if (!existingUser) {
-			return fail(400, {
-				message: "Incorrect username or password"
-			});
+			console.log(1)
+			return fail(400, { email, incorrect: true });
 		}
 
 		const validPassword = await verifyPassword(password, existingUser.hashed_password)
 		if (!validPassword) {
-			return fail(400, {
-				message: "Incorrect username or password"
-			});
+			console.log(2)
+			return fail(400, { email, incorrect: true });
 		}
 
 		const session = await createSession(existingUser.id)
@@ -49,4 +32,4 @@ export const actions: Actions = {
 
 		redirect(302, "/");
 	}
-};
+} satisfies Actions;
