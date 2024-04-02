@@ -1,8 +1,14 @@
-import { fail, redirect } from "@sveltejs/kit";
+import { fail, redirect, type ServerLoad } from "@sveltejs/kit";
 
 import type { Actions } from "../$types";
 import { getUserByEmail } from "$lib/services/users";
 import { createSession, createSessionCookie, verifyPassword } from "$lib/services/auth";
+
+export const load: ServerLoad = async ({ locals }) => {
+    if(locals.user) {
+		redirect(302, "/")
+	}
+}
 
 export const actions = {
 	default: async (event) => {
@@ -13,7 +19,6 @@ export const actions = {
 		const existingUser = await getUserByEmail(email);
 
 		if (!existingUser) {
-			console.log(1)
 			return fail(400, { email, incorrect: true });
 		}
 
@@ -30,6 +35,6 @@ export const actions = {
 			...sessionCookie.attributes
 		});
 
-		redirect(302, "/");
+		redirect(302, "/bots");
 	}
 } satisfies Actions;

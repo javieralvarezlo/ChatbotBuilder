@@ -6,7 +6,7 @@
 	import { Badge } from 'flowbite-svelte';
 </script>
 
-<div class="flex justify-center h-full pt-28">
+<div class="flex justify-center h-full pt-12">
 	<Card class="h-min">
 		<form class="flex flex-col space-y-6" method="post" use:enhance>
 			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Inicia Sesión</h3>
