@@ -10,7 +10,7 @@ export const dirExists = (username: string): boolean => {
 }
 
 export const createUserFolder = (username: string) => {
-    mkdirSync(`./${DATA_DIR}/${username}`);
+    mkdirSync(`./${DATA_DIR}/${username}`, { recursive: true });
 }
 
 export const createFile = (file: string, content: string) => {
@@ -48,7 +48,7 @@ export const botsWithDescription = (user: string) => {
         try {
             description = readFileSync(join(`./${DATA_DIR}/${user}/${dir}/`, 'description'), { encoding: 'utf-8' });
             console.log("AAAA" + readFileSync(join(dir, 'description'), { encoding: 'utf-8' }))
-        } catch (err) {  }
+        } catch (err) { }
         bots.push({
             name: dir,
             description
@@ -56,5 +56,5 @@ export const botsWithDescription = (user: string) => {
         botStrings.push(`${dir}:@:${description}`)
     })
 
-    return {bots, botStrings};
+    return { bots, botStrings };
 }
