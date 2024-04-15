@@ -1,5 +1,16 @@
 <script lang="ts">
-	import { Card, Listgroup, Button, Label, Input, Toast, Helper, Modal } from 'flowbite-svelte';
+	import {
+		Card,
+		Listgroup,
+		Button,
+		Label,
+		Input,
+		Toast,
+		Helper,
+		Modal,
+		Breadcrumb,
+		BreadcrumbItem
+	} from 'flowbite-svelte';
 	import type { PageData } from './$types';
 
 	import { TrashBinSolid, CheckCircleSolid, ExclamationCircleOutline } from 'flowbite-svelte-icons';
@@ -30,21 +41,30 @@
 
 <div class="flex justify-evenly p-3">
 	<Card padding="xl" size="lg" class="h-min">
-		<div class="flex justify-between items-center mb-4">
-			<h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Lista de Bots</h5>
+		<div class="flex justify-between items-center mb-4 flex-col">
+			<div class="w-full">
+				<Breadcrumb aria-label="Default breadcrumb example">
+					<BreadcrumbItem href="/bots" home>Home</BreadcrumbItem>
+					<BreadcrumbItem href="/bots">Bots</BreadcrumbItem>
+				</Breadcrumb>
+			</div>
+
+			<h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mt-4 w-full">
+				Lista de Bots
+			</h5>
 		</div>
 		{#if data.bots.length > 0}
 			<Listgroup items={data.botStrings} let:item class="border-0 dark:!bg-transparent">
 				<div class="flex items-center space-x-4 rtl:space-x-reverse">
 					<div class="flex-1 min-w-0">
 						<a
-							href={`/bots/${item.split(":@:")[0]}`}
+							href={`/bots/${item.split(':@:')[0]}`}
 							class="text-sm font-medium text-gray-900 truncate dark:text-white"
 						>
-							{item.split(":@:")[0]}
+							{item.split(':@:')[0]}
 						</a>
 						<p class="text-sm text-gray-500 truncate dark:text-gray-400">
-							{item.split(":@:")[1]}
+							{item.split(':@:')[1]}
 						</p>
 					</div>
 					<div
@@ -56,7 +76,7 @@
 							size="lg"
 							on:click={() => {
 								popupModal = true;
-								currentBot = item.split(":@:")[0];
+								currentBot = item.split(':@:')[0];
 							}}
 						>
 							<TrashBinSolid class="w-5 h-5 text-primary-700 group-hover:text-white" />

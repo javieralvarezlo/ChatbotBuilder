@@ -1,5 +1,4 @@
 import { mkdirSync, existsSync, readdirSync, rmdir, rmdirSync, cpSync, writeFileSync, readFileSync } from 'node:fs';
-import { rasaInit } from './rasa';
 import { join } from 'node:path';
 
 export const DATA_DIR = `data`;
