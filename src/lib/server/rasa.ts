@@ -1,11 +1,19 @@
 import { exec, spawn } from "child_process"
-import { readFile } from "./fs"
-import { load } from "js-yaml"
+import { createFile, readFile } from "./fs"
+import { load, dump } from "js-yaml"
 
 export const getDomainFile = (user: string, bot: string): any => {
     let file = readFile(`./data/${user}/${bot}/domain.yml`).toString()
     let doc = load(file)
     return doc
+}
+
+export const saveResponses = (user: string, bot: string, responses: any) => {
+    let domainFile = getDomainFile(user, bot);
+    domainFile.responses = responses;
+    let doc = dump(domainFile)
+    console.log(doc)
+    createFile(`./data/${user}/${bot}/domain.yml`, doc)
 }
 
 

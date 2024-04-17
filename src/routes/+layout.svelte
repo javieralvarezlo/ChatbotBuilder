@@ -84,7 +84,7 @@
 		</div>
 	</div>
 </nav>
-<div class="h-screen bg-gradient-to-br from-indigo-700 via-purple-800 to-pink-800 flex">
+<div class="h-screen  flex">
 	{#if data.user}
 		<Sidebar {activeUrl}>
 			<SidebarWrapper class="h-screen bg-gray-50">
