@@ -21,6 +21,7 @@ export const readFile = (file: string) => {
 }
 
 export const foldersIn = (dir: string | undefined): string[] => {
+    console.log(2)
     return readdirSync(`./${DATA_DIR}/${dir}`);
 }
 
@@ -30,8 +31,8 @@ export const userHasBot = (email: string | undefined, bot: string): boolean => {
 
 export const createBot = (email: string | undefined, bot: string, description: string) => {
     mkdirSync(`./${DATA_DIR}/${email}/${bot}`);
-    createFile(`./${DATA_DIR}/${email}/${bot}/description`, description);
-    cpSync(`${DEFAULT_RASA}`, `./${DATA_DIR}/${email}/${bot}`, { recursive: true })
+    createFile(`./${DATA_DIR}/${email}/${bot}/info.json`, JSON.stringify({name: bot, description}));
+    cpSync(`./${DEFAULT_RASA}`, `/${DATA_DIR}/${email}/${bot}`, { recursive: true })
 }
 
 export const deleteBot = (email: string | undefined, bot: string) => {
@@ -43,16 +44,15 @@ export const botsWithDescription = (user: string) => {
     let botStrings: any = [];
     let dirs = foldersIn(`${user}`);
     dirs.forEach(dir => {
-        let description = '';
+        let info;
         try {
-            description = readFileSync(join(`./${DATA_DIR}/${user}/${dir}/`, 'description'), { encoding: 'utf-8' });
-            console.log("AAAA" + readFileSync(join(dir, 'description'), { encoding: 'utf-8' }))
+            info = JSON.parse(readFileSync(join(`./${DATA_DIR}/${user}/${dir}/`, 'info.json'), { encoding: 'utf-8' }));
         } catch (err) { }
         bots.push({
             name: dir,
-            description
+            description: info.description
         })
-        botStrings.push(`${dir}:@:${description}`)
+        botStrings.push(`${dir}:@:${info.description}`)
     })
 
     return { bots, botStrings };

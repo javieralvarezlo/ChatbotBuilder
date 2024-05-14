@@ -26,63 +26,67 @@
 
 	export let data: PageData;
 
-	let responseName: string;
-	let responseContent: string;
+	let intentName: string;
+	let intentContent: string;
 
-	let responseModal: boolean;
-	let currentResponse: string;
+	let intentModal: boolean;
+	let currentIntent: string;
 
-	let messageModal: boolean;
-	let currentMessage: string;
+	let exampleModal: boolean;
+	let currentExample: string;
 
-	let edittingMessage: string;
-	let creatingMessage: string;
+	let edittingExample: string;
+	let creatingExample: string;
 
-	let createMode: boolean;
 	let editMode: boolean;
+	let createMode: boolean;
 
 	let errorMessage: string;
 
 	let successMessage: string;
 
-	$: responses = data.responses;
+	$: intents = data.intents;
 
-	const removeResponse = (response: any) => {
-		delete responses[response];
-		responses = responses;
-		responseModal = false;
-		throwSuccess('Respuesta eliminada correctamente');
+	const removeIntent = (intent: any) => {
+		const index = intents.indexOf(intents.find((el) => el.intent === intent));
+		intents.splice(index, 1);
+		intents = intents;
+		intentModal = false;
+		throwSuccess('Intención eliminada correctamente');
 	};
 
-	const removeMessage = () => {
+	const removeExample = () => {
 		let index;
-		responses[currentResponse].map((el: any, idx: number) => {
-			if (el.text === currentMessage) index = idx;
-		});
+		intents
+			.find((el) => el.intent === currentIntent)
+			.examples.map((el: any, idx: number) => {
+				if (el.text === currentExample) index = idx;
+			});
 
-		responses[currentResponse].splice(index, 1);
-		responses = responses;
-		messageModal = false;
+		intents.find((el) => el.intent === currentIntent).examples.splice(index, 1);
+		intents = intents;
+		exampleModal = false;
 		throwSuccess('Mensaje eliminado correctamente');
 	};
 
 	const create = () => {
-		if (!responseName) {
+		if (!intentName) {
 			throwError('Debes indicar un nombre');
 			return;
 		}
-		if (responses["utter_"+responseName]) {
+		if (intents.find((i) => i.intent === intentName)) {
 			throwError('Ya existe una respuesta con ese nombre');
 			return;
 		}
-		if (!responseContent) {
+		if (!intentContent) {
 			throwError('Debes indicar un mensaje inicial');
 			return;
 		}
-		responses["utter_"+responseName] = [{ text: responseContent }];
-		responseName = '';
-		responseContent = '';
-		throwSuccess('Respuesta creada correctamente');
+		intents.push({ intent: intentName, examples: [intentContent] });
+		intents = intents;
+		intentName = '';
+		intentContent = '';
+		throwSuccess('Intención creada correctamente');
 	};
 
 	const throwError = (message: string) => {
@@ -95,40 +99,40 @@
 		toast.success(message)
 	};
 </script>
-
 <Toaster />
 
-<Modal bind:open={responseModal} size="xs">
+
+<Modal bind:open={intentModal} size="xs">
 	<div class="text-center">
 		<ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			¿Estás seguro de que quieres eliminar la respuesta <span class="font-bold"
-				>{currentResponse}</span
+			¿Estás seguro de que quieres eliminar la intención <span class="font-bold"
+				>{currentIntent}</span
 			>? La acción es irreversible
 		</h3>
-		<Input type="text" name="bot" id="bot" class="hidden" value={currentResponse} />
-		<Button color="red" class="me-2" type="submit" on:click={() => removeResponse(currentResponse)}
+		<Input type="text" name="bot" id="bot" class="hidden" value={currentIntent} />
+		<Button color="red" class="me-2" type="submit" on:click={() => removeIntent(currentIntent)}
 			>Sí, eliminar</Button
 		>
 
-		<Button color="alternative" on:click={() => (responseModal = false)}>No, cancelar</Button>
+		<Button color="alternative" on:click={() => (intentModal = false)}>No, cancelar</Button>
 	</div>
 </Modal>
 
-<Modal bind:open={messageModal} size="xs">
+<Modal bind:open={exampleModal} size="xs">
 	<div class="text-center">
 		<ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			¿Estás seguro de que quieres eliminar el mensaje <span class="font-bold"
-				>{currentMessage}</span
+				>{currentExample}</span
 			>? La acción es irreversible
 		</h3>
-		<Input type="text" name="bot" id="bot" class="hidden" value={currentMessage} />
-		<Button color="red" class="me-2" type="submit" on:click={() => removeMessage()}
+		<Input type="text" name="bot" id="bot" class="hidden" value={currentExample} />
+		<Button color="red" class="me-2" type="submit" on:click={() => removeExample()}
 			>Sí, eliminar</Button
 		>
 
-		<Button color="alternative" on:click={() => (messageModal = false)}>No, cancelar</Button>
+		<Button color="alternative" on:click={() => (exampleModal = false)}>No, cancelar</Button>
 	</div>
 </Modal>
 
@@ -140,40 +144,41 @@
 					<BreadcrumbItem href="/bots" home>Home</BreadcrumbItem>
 					<BreadcrumbItem href="/bots">Bots</BreadcrumbItem>
 					<BreadcrumbItem><a href={`/bots/${data.bot}`}>{data.bot}</a></BreadcrumbItem>
-					<BreadcrumbItem>Respuestas</BreadcrumbItem>
+					<BreadcrumbItem>Intenciones</BreadcrumbItem>
 				</Breadcrumb>
 			</div>
 
 			<h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mt-4 w-full mb-4">
-				Respuestas del bot {data.bot}
+				Intenciones del bot {data.bot}
 			</h5>
 			<p>
-				Las respuestas son cadenas de texto predefinidas usadas por el bot para responder al
-				usuario. Para una misma respuesta se pueden definir varias cadenas de texto. Estas serán
-				enviadas de forma aleatoria.
+				Las intenciones son las acciones del usuario que el bot detecta y en base a las cuales toma
+				decisiones sobre qué Respuesta dar. Para cada intención hay que definir múltiples ejemplos
+				en lenguaje natural de cómo puede ser expresado dicho mensaje. Se recomiendan entre 5 y 20
+				ejemplos por Intención.
 			</p>
 		</div>
 
 		<ul
 			class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-600 border-0 dark:!bg-transparent"
 		>
-			{#each Object.keys(responses) as r}
+			{#each data.intents as intent}
 				<li
 					class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg"
 				>
 					<div class="flex items-center space-x-4 rtl:space-x-reverse">
 						<div class="flex-1 min-w-0">
 							<p class="text-lg text-gray-700 group">
-								{r.split("utter_")[1]}
+								{intent.intent}
 								<button
 									on:click={() => {
-										if (edittingMessage) {
+										if (edittingExample) {
 											throwError('Termina de editar el mensaje');
 											return;
 										}
 										createMode = true;
-										currentResponse = r;
-										const itemInput = document.getElementById(r + 'create');
+										currentIntent = intent.intent;
+										const itemInput = document.getElementById(intent.intent + 'create');
 										itemInput.hidden = !itemInput.hidden;
 									}}><PlusOutline class="group-hover:visible invisible" /></button
 								>
@@ -181,63 +186,100 @@
 							<ul
 								class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-600 border-0 dark:!bg-transparent"
 							>
-								{#each responses[r] as re, index}
+								<li hidden id={intent.intent + 'create'}>
+									<div>
+										<form
+											on:submit={() => {
+												if (!createMode) return;
+												if (!creatingExample) {
+													throwError('No puedes dejar el mensaje vacío');
+													return;
+												}
+												const itemInput = document.getElementById(currentIntent + 'create');
+												intents
+													.find((el) => el.intent === currentIntent)
+													.examples.push(creatingExample);
+												intents = intents;
+												edittingExample = '';
+												itemInput.hidden = !itemInput.hidden;
+												creatingExample = '';
+												createMode = false;
+												throwSuccess("Mensaje creado correctamente");
+
+											}}
+										>
+											<Input type="text" bind:value={creatingExample}>
+												<button slot="right"
+													><CheckOutline
+														slot="right"
+														class="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-green-500"
+													/></button
+												>
+											</Input>
+										</form>
+									</div>
+								</li>
+								{#each intent.examples as example, index}
 									<li
 										class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg group"
 									>
-										<div class="group" id={r + re.text}>
-											{re.text}<button class="ml-2"
+										<div class="group" id={intent.intent + example}>
+											{example}<button
+												class="ml-2"
 												on:click={() => {
-													if (edittingMessage) {
+													if (edittingExample) {
 														throwError('Termina de editar el mensaje');
 														return;
 													}
-													messageModal = true;
-													currentMessage = re.text;
-													currentResponse = r;
+													exampleModal = true;
+													currentExample = example;
+													currentIntent = intent.intent;
 												}}><TrashBinOutline class="group-hover:visible invisible" /></button
 											>
 											<button
 												on:click={() => {
-													if (edittingMessage) {
+													if (edittingExample) {
 														throwError('Termina de editar el mensaje');
 														return;
 													}
 													editMode = true;
-													currentMessage = re.text;
-													currentResponse = r;
-													edittingMessage = re.text;
-													const item = document.getElementById(currentResponse + currentMessage);
+													currentExample = example;
+													currentIntent = intent.intent;
+													edittingExample = example;
+													const item = document.getElementById(currentIntent + currentExample);
 													const itemInput = document.getElementById(
-														currentResponse + currentMessage + 'input'
+														currentIntent + currentExample + 'input'
 													);
 													item.hidden = !item.hidden;
 													itemInput.hidden = !itemInput.hidden;
 												}}><EditOutline class="group-hover:visible invisible" /></button
 											>
 										</div>
-										<div hidden id={r + re.text + 'input'}>
+										<div hidden id={intent.intent + example + 'input'}>
 											<form
 												on:submit={() => {
 													if (!editMode) return;
-													if (!edittingMessage) {
+													if (!edittingExample) {
 														throwError('No puedes dejar el mensaje vacío');
 														return;
 													}
-													const item = document.getElementById(currentResponse + currentMessage);
+													const item = document.getElementById(currentIntent + currentExample);
 													const itemInput = document.getElementById(
-														currentResponse + currentMessage + 'input'
+														currentIntent + currentExample + 'input'
 													);
-													responses[r][index].text = edittingMessage;
-													responses = responses;
+
+													intents.find((el) => el.intent === currentIntent).examples[index] =
+														edittingExample;
+													intents = intents;
 													item.hidden = !item.hidden;
 													itemInput.hidden = !itemInput.hidden;
-													edittingMessage = '';
+													edittingExample = '';
 													editMode = false;
 													throwSuccess("Mensaje editado correctamente");
+
 												}}
 											>
-												<Input type="text" bind:value={edittingMessage}>
+												<Input type="text" bind:value={edittingExample}>
 													<button slot="right"
 														><CheckOutline
 															slot="right"
@@ -249,37 +291,6 @@
 										</div>
 									</li>
 								{/each}
-								<li hidden id={r + 'create'}>
-									<div>
-										<form
-											on:submit={() => {
-												if (!createMode) return;
-												if (!creatingMessage) {
-													throwError('No puedes dejar el mensaje vacío');
-													return;
-												}
-												const item = document.getElementById(currentResponse + currentMessage);
-												const itemInput = document.getElementById(currentResponse + 'create');
-												responses[r].push({ text: creatingMessage });
-												responses = responses;
-												edittingMessage = '';
-												itemInput.hidden = !itemInput.hidden;
-												creatingMessage = '';
-												createMode = false;
-												throwSuccess("Mensaje creado correctamente");
-											}}
-										>
-											<Input type="text" bind:value={creatingMessage}>
-												<button slot="right"
-													><CheckOutline
-														slot="right"
-														class="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-green-500"
-													/></button
-												>
-											</Input>
-										</form>
-									</div>
-								</li>
 							</ul>
 						</div>
 						<div
@@ -290,12 +301,12 @@
 								class="!p-2"
 								size="lg"
 								on:click={() => {
-									if (edittingMessage) {
+									if (edittingExample) {
 										throwError('Termina de editar el mensaje');
 										return;
 									}
-									responseModal = true;
-									currentResponse = r;
+									intentModal = true;
+									currentIntent = intent.intent;
 								}}
 							>
 								<TrashBinSolid class="w-5 h-5 text-primary-700 group-hover:text-white" />
@@ -306,7 +317,7 @@
 			{/each}
 		</ul>
 		<form class="flex flex-col space-y-6" method="post" use:enhance action="?/save">
-			<input type="text" hidden value={JSON.stringify(responses)} name="responses">
+			<input type="text" hidden value={JSON.stringify(intents)} name="intents" />
 			<Button color="green" type="submit">
 				<ArchiveArrowDownSolid class="w-3.5 h-3.5 me-2" /> Guardar
 			</Button>
@@ -314,16 +325,16 @@
 	</Card>
 	<Card padding="xl" size="sm" class="h-min mb-2">
 		<div class="flex flex-col space-y-6">
-			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Crea una respuesta</h3>
+			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Crea una intención</h3>
 			<Label class="space-y-2" for="name">
-				<span>Nombre de la respuesta</span>
-				<Input type="text" name="name" id="name" bind:value={responseName} />
+				<span>Nombre de la intención</span>
+				<Input type="text" name="name" id="name" bind:value={intentName} />
 			</Label>
 			<Label class="space-y-2" for="description">
-				<span>Contenido de la respuesta</span>
-				<Input type="text" name="description" id="desc" bind:value={responseContent} />
+				<span>Mensaje de la intención</span>
+				<Input type="text" name="description" id="desc" bind:value={intentContent} />
 			</Label>
-			<Button class="w-full" on:click={create}>Crear respuesta</Button>
+			<Button class="w-full" on:click={create}>Crear intención</Button>
 		</div>
 	</Card>
 </div>

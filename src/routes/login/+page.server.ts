@@ -3,6 +3,8 @@ import { fail, redirect, type ServerLoad } from "@sveltejs/kit";
 import type { Actions } from "../$types";
 import { getUserByEmail } from "$lib/services/users";
 import { createSession, createSessionCookie, verifyPassword } from "$lib/services/auth";
+import { createUserFolder, dirExists } from "$lib/server/fs";
+import { emailToPath } from "$lib/services/utils";
 
 export const load: ServerLoad = async ({ locals }) => {
     if(locals.user) {
@@ -24,8 +26,11 @@ export const actions = {
 
 		const validPassword = await verifyPassword(password, existingUser.hashed_password)
 		if (!validPassword) {
-			console.log(2)
 			return fail(400, { email, incorrect: true });
+		}
+
+		if(!dirExists(`/data/${emailToPath(email)}`)) {
+			createUserFolder(`/data/${emailToPath(email)}`);
 		}
 
 		const session = await createSession(existingUser.id)

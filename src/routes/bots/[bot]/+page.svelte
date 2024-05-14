@@ -12,7 +12,7 @@
 	} from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	import Fa from 'svelte-fa';
-	import { faComment, faLightbulb } from '@fortawesome/free-solid-svg-icons';
+	import { faComment, faLightbulb, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 
 	export let data: PageData;
 </script>
@@ -39,7 +39,7 @@
 				class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg"
 			>
 				<div class="flex items-center space-x-4 rtl:space-x-reverse">
-					<Fa icon={faComment} class="flex-shrink-0 text-xl" />
+					<Fa icon={faQuoteRight} class="flex-shrink-0 text-xl" />
 					<div class="flex-1 min-w-0">
 						<a
 							href={`/bots/${data.bot}/responses`}
@@ -65,18 +65,29 @@
 					</div>
 				</div>
 			</li>
+			<li
+				class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg"
+			>
+				<div class="flex items-center space-x-4 rtl:space-x-reverse">
+					<Fa icon={faComment} class="flex-shrink-0 text-xl" />
+					<div class="flex-1 min-w-0">
+						<a
+							href={`/bots/${data.bot}/dialogs`}
+							class="text-lg font-medium text-gray-900 truncate dark:text-white"
+						>
+							Diálogos
+						</a>
+					</div>
+				</div>
+			</li>
 		</ul>
 	</Card>
-    <Card padding="xl" size="sm" class="h-min">
+	<Card padding="xl" size="sm" class="h-min">
 		<form class="flex flex-col space-y-6" method="post" action="?/create">
 			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Crea un bot</h3>
 			<Label class="space-y-2" for="name">
 				<span>Nombre</span>
-				<Input
-					type="text"
-					name="name"
-					id="name"
-				/>
+				<Input type="text" name="name" id="name" />
 			</Label>
 			<Label class="space-y-2" for="description">
 				<span>Descripción</span>

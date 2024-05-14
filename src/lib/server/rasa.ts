@@ -8,12 +8,24 @@ export const getDomainFile = (user: string, bot: string): any => {
     return doc
 }
 
+export const getNluFile = (user: string, bot: string): any => {
+    let file = readFile(`./data/${user}/${bot}/data/nlu.yml`).toString()
+    let doc = load(file)
+    return doc
+}
+
 export const saveResponses = (user: string, bot: string, responses: any) => {
     let domainFile = getDomainFile(user, bot);
     domainFile.responses = responses;
     let doc = dump(domainFile)
-    console.log(doc)
     createFile(`./data/${user}/${bot}/domain.yml`, doc)
+}
+
+export const saveIntents = (user: string, bot: string, intents: any) => {
+    let nluFile = getNluFile(user, bot);
+    nluFile.nlu = intents;
+    let doc = dump(nluFile)
+    createFile(`./data/${user}/${bot}/data/nlu.yml`, doc)
 }
 
 

@@ -9,6 +9,13 @@ services:
     env_file:
       - .env.docker
     restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ./data
+        target: /app/data
+      - type: bind
+        source: ./default-rasa
+        target: /default-rasa
     ports:
       - 3000:3000
     depends_on:
