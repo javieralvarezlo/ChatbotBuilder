@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, parent }) => {
 export const actions = {
     save: async (event) => {
         const formData = await event.request.formData();
-        const intents = JSON.parse(formData.get("intents") );
+        const intents = JSON.parse(formData.get("intents"));
         intents.forEach((intent: any) => {
             let examples = [];
             intent.examples.forEach((example: any) => {
@@ -38,5 +38,5 @@ const examplesStringToList = (examples: string) => {
     ex.forEach((e, id) => {
         ex[id] = e.split('- ')[1]
     })
-    return ex.slice(0, ex.length-1)
+    return ex.slice(0, ex.length - 1)
 }

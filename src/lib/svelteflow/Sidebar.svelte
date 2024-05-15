@@ -1,150 +1,161 @@
 <script lang="ts">
-  import { useNodes, useEdges, useSvelteFlow } from "@xyflow/svelte";
-  import { intents, actions } from "./domain";
-  import { onMount } from "svelte";
-  import { useNodesData } from "@xyflow/svelte";
+	import { useNodes, useEdges, useSvelteFlow } from '@xyflow/svelte';
+	import { onMount } from 'svelte';
+	import { useNodesData } from '@xyflow/svelte';
+	import { enhance } from '$app/forms';
+	import { Button, Helper, Radio } from 'flowbite-svelte';
+	import toast, { Toaster } from 'svelte-french-toast';
 
-  const nodeData = useNodes();
-  const edgeData = useEdges();
+	const nodeData = useNodes();
+	const edgeData = useEdges();
 
-  const onDragStart = (event: DragEvent, data: Object) => {
-    if (!event.dataTransfer) {
-      return null;
-    }
+	export let intents: any[];
+	export let responses: any[];
+	export let t: string;
 
-    event.dataTransfer.setData("application/svelteflow", JSON.stringify(data));
-    event.dataTransfer.effectAllowed = "move";
-  };
+	let dialogType: string = t;
 
-  const getData = () => {
-    const nodes = JSON.stringify($nodeData);
-    const edges = JSON.stringify($edgeData);
+	const onDragStart = (event: DragEvent, data: Object) => {
+		if (!event.dataTransfer) {
+			return null;
+		}
 
-    const unconnected = $nodeData.filter((node) => {
-      return (
-        !$edgeData.find((edge) => edge.target === node.id) &&
-        !$edgeData.find((edge) => edge.source === node.id)
-      );
-    });
+		event.dataTransfer.setData('application/svelteflow', JSON.stringify(data));
+		event.dataTransfer.effectAllowed = 'move';
+	};
 
-    if (unconnected.length !== 0) {
-      alert("Hay nodos sin conectar");
-      console.log(unconnected);
-      return;
-    }
+	onMount(() => {
+		$nodeData.map((node) => {
+			document.getElementById(node.data.name).hidden = true;
+		});
+	});
 
-    let root = $nodeData.filter((node) => {
-      return (
-        node.type == "intent" &&
-        !$edgeData.find((edge) => edge.target === node.id)
-      );
-    });
+	const save = () => {
 
-    if (root.length != 1) {
-      alert("Hay más de una raíz");
-      return;
-    }
+		if($nodeData.length === 0) {
+			toast.error("No puedes dejar el diálogo vacío")
+			return;
+		}
 
-    let caminos: string[] = [];
-    profundidad(root[0], [], caminos);
-    console.log(caminos);
+		const unconnected = $nodeData.filter((node) => {
+			return (
+				!$edgeData.find((edge) => edge.target === node.id) &&
+				!$edgeData.find((edge) => edge.source === node.id)
+			);
+		});
 
-    return;
-    localStorage.setItem("nodes", nodes);
-    localStorage.setItem("edges", edges);
-  };
+		if (unconnected.length !== 0) {
+			toast.error("Hay nodos sin conectar")
+			return;
+		}
 
-  const profundidad = (node: any, actual: any[], result: any[]) => {
-    const edges = $edgeData;
-    const nodes = $nodeData;
+		let root = $nodeData.filter((node) => {
+			return !$edgeData.find((edge) => edge.target === node.id);
+		});
 
-    actual.push({type: node.type, name: node.data.name});
+		if (root.length != 1) {
+			toast.error("Hay más de un nodo raíz")
+			return;
+		}
 
-    if (!edges.find((edge) => edge.source === node.id)) {
-      result.push([...actual]);
-    }
-
-    const caminos = edges.filter((edge) => edge.source === node.id);
-    caminos.map((path) => {
-      profundidad(
-        nodes.find((node) => node.id === path.target),
-        actual,
-        result,
-      );
-    });
-
-    actual.pop();
-  };
-
-  onMount(() => {
-    $nodeData.map((node) => {
-      document.getElementById(node.data.name).hidden = true;
-    });
-  });
+		root = root[0];
+		if(root.type !== 'intent') {
+			toast.error("El nodo raíz tiene que ser una intención")
+			return;
+		}
+		toast.success("Diálogo guardado correctamente")
+		document.getElementById('sfDiagrama').requestSubmit();
+	};
 </script>
 
+<Toaster />
 <aside>
-  <div class="label">You can drag these nodes to the pane below.</div>
-  <button on:click={getData}>Obtener datos</button>
-  <div class="nodes-container">
-    {#each intents as intent}
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div
-        id={intent.name}
-        class="input-node node"
-        on:dragstart={(event) =>
-          onDragStart(event, { type: "intent", name: intent.name })}
-        draggable={true}
-      >
-        {intent.name}
-      </div>
-    {/each}
-  </div>
-  <div class="nodes-container">
-    {#each actions as action}
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div
-        id={action.name}
-        class="input-node node"
-        on:dragstart={(event) =>
-          onDragStart(event, { type: "action", name: action.name })}
-        draggable={true}
-      >
-        {action.name}
-      </div>
-    {/each}
-  </div>
+	<div class="label"><p class="text-xl dark:text-white">Intenciones</p></div>
+
+	<div class="nodes-container">
+		{#each intents as intent}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div
+				id={intent.name}
+				class="input-node node"
+				on:dragstart={(event) => onDragStart(event, { type: 'intent', name: intent.name })}
+				draggable={true}
+			>
+				{intent.name}
+			</div>
+		{/each}
+	</div>
+	<div class="label"><p class="text-xl dark:text-white">Acciones</p></div>
+	<div class="nodes-container">
+		{#each responses as action}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div
+				id={action.name}
+				class="input-node node"
+				on:dragstart={(event) => onDragStart(event, { type: 'action', name: action.name })}
+				draggable={true}
+			>
+				{action.name}
+			</div>
+		{/each}
+	</div>
+	<div class="btn-down">
+		<form method="POST" action="?/save" id="sfDiagrama" use:enhance>
+			<input type="text" name="nodes" value={JSON.stringify($nodeData)} hidden />
+			<input type="text" name="edges" value={JSON.stringify($edgeData)} hidden />
+			<Radio
+				aria-describedby="helper-checkbox-text"
+				name="type"
+				bind:group={dialogType}
+				value="relaxed">Relajado</Radio
+			>
+			<Radio
+				aria-describedby="helper-checkbox-text"
+				name="type"
+				bind:group={dialogType}
+				value="strict">Estricto</Radio
+			>
+			<button
+				class="mt-2 text-center font-medium focus-within:ring-4 focus-within:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 focus-within:ring-green-300 dark:focus-within:ring-green-800 rounded-lg"
+				type="submit"
+				on:click|preventDefault={() => save()}>Guardar</button
+			>
+		</form>
+	</div>
 </aside>
 
 <style>
-  aside {
-    width: 100%;
-    background: #f4f4f4;
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+	.btn-down {
+		margin-bottom: 0.5rem;
+	}
 
-  .label {
-    margin: 1rem 0;
-    font-size: 0.9rem;
-  }
+	aside {
+		width: 100%;
+		background: #f4f4f4;
+		font-size: 12px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
 
-  .nodes-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+	.label {
+		margin: 1rem 0;
+	}
 
-  .node {
-    margin: 0.5rem;
-    border: 1px solid #111;
-    padding: 0.5rem 1rem;
-    font-weight: 700;
-    border-radius: 3px;
-    cursor: grab;
-    width: 50px;
-  }
+	.nodes-container {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		justify-content: space-evenly;
+	}
+
+	.node {
+		margin: 0.5rem;
+		border: 1px solid #111;
+		padding: 0.5rem 1rem;
+		font-weight: 700;
+		border-radius: 3px;
+		cursor: grab;
+	}
 </style>

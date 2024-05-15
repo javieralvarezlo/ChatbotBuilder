@@ -14,6 +14,16 @@ export const getNluFile = (user: string, bot: string): any => {
     return doc
 }
 
+export const getStories = (user: string, bot: string): any => {
+    let file = readFile(`./data/${user}/${bot}/data/stories.yml`).toString()
+    let doc = load(file)
+    return doc
+}
+
+export const getBotInfo = (user: string, bot: string): any => {
+    return JSON.parse(readFile(`./data/${user}/${bot}/info.json`).toString())
+}
+
 export const saveResponses = (user: string, bot: string, responses: any) => {
     let domainFile = getDomainFile(user, bot);
     domainFile.responses = responses;
@@ -28,7 +38,44 @@ export const saveIntents = (user: string, bot: string, intents: any) => {
     createFile(`./data/${user}/${bot}/data/nlu.yml`, doc)
 }
 
+export const saveDialog = (user: string, bot: string, dialog: string, nodes: any, edges: any, type: string) => {
+    let botInfo = getBotInfo(user, bot);
+    botInfo.dialogs.find((el: { name: string }) => el.name === dialog).flow.nodes = nodes;
+    botInfo.dialogs.find((el: { name: string }) => el.name === dialog).flow.edges = edges;
+    botInfo.dialogs.find((el: { name: string }) => el.name === dialog).type = type;
+    createFile(`./data/${user}/${bot}/info.json`, JSON.stringify(botInfo))
+}
 
+export const saveStories = (user: string, bot: string, stories: any) => {
+    let s = getStories(user, bot);
+    s.stories = stories;
+    let doc = dump(s);
+    createFile(`./data/${user}/${bot}/data/stories.yml`, doc);
+}
+
+export const removeStories = (user: string, bot: string, story: string) => {
+    let s = getStories(user, bot);
+    s.stories = s.stories.filter(st => !st.story.startsWith(story))
+    saveStories(user, bot, s.stories)
+}
+
+export const createDialog = (user: string, bot: string, name: string, type: string) => {
+    let botInfo = getBotInfo(user, bot);
+    const dialog = { name, type, steps: [], flow: { nodes: [], edges: [] } }
+    botInfo.dialogs.push(dialog)
+    createFile(`./data/${user}/${bot}/info.json`, JSON.stringify(botInfo))
+}
+
+export const existsDialog = (user: string, bot: string, name: string) => {
+    let botInfo = getBotInfo(user, bot);
+    return botInfo.dialogs.find((el: { name: string }) => el.name === name)
+}
+
+export const removeDialog = (user: string, bot: string, name: string) => {
+    let botInfo = getBotInfo(user, bot);
+    botInfo.dialogs = botInfo.dialogs.filter((el: { name: string }) => el.name !== name)
+    createFile(`./data/${user}/${bot}/info.json`, JSON.stringify(botInfo))
+}
 export const rasaInit = async (dir: string): Promise<boolean> => {
 
     try {

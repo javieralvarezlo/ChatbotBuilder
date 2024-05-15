@@ -22,6 +22,15 @@
 
   const nodeData = useNodes();
 
+  export let intents: any[];
+  export let responses: any[];
+  export let nodesProp: any[];
+  export let edgesProp: any[];
+  export let t: string;
+
+  let nodes = writable(nodesProp);
+  let edges = writable(edgesProp);
+
   let menu: {
     id: string;
     top?: number;
@@ -54,9 +63,6 @@
   function handlePaneClick() {
     menu = null;
   }
-
-  const nodes = writable(JSON.parse(localStorage.getItem("nodes")));
-  const edges = writable(JSON.parse(localStorage.getItem("edges")));
 
   const { screenToFlowPosition } = useSvelteFlow();
   const onDragOver = (event: DragEvent) => {
@@ -115,9 +121,10 @@
       (source?.type === "action" && target?.type === "intent")
     );
   };
+
 </script>
 
-<main bind:clientWidth={width} bind:clientHeight={height}>
+<div bind:clientWidth={width} bind:clientHeight={height} id="flow">
   <SvelteFlow
     {isValidConnection}
     {nodes}
@@ -145,12 +152,13 @@
 
     <MiniMap />
   </SvelteFlow>
-  <Sidebar />
-</main>
+  <Sidebar {intents} {responses} {t}/>
+</div>
 
 <style>
-  main {
+  #flow {
     height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column-reverse;
   }
@@ -160,7 +168,7 @@
     height: 8px;
   }
 
-  :global(.svelte-flow .svelte-flow__handle.connecting) {
+  :global(.svelte-flow .svelte-flow__handle.connectingto) {
     background: #ff6060;
   }
 

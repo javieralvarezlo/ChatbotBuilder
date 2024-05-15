@@ -1,6 +1,6 @@
-import { fail, redirect, type ServerLoad } from "@sveltejs/kit";
+import { fail, type ServerLoad } from "@sveltejs/kit";
 
-import { botsWithDescription, createBot, deleteBot, foldersIn, userHasBot } from "$lib/server/fs";
+import { botsWithDescription, createBot, deleteBot, userHasBot } from "$lib/server/fs";
 import type { Actions } from "./$types";
 import { emailToPath } from "$lib/services/utils";
 
