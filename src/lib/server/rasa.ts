@@ -20,6 +20,12 @@ export const getStories = (user: string, bot: string): any => {
     return doc
 }
 
+export const getRules = (user: string, bot: string): any => {
+    let file = readFile(`./data/${user}/${bot}/data/rules.yml`).toString()
+    let doc = load(file)
+    return doc
+}
+
 export const getBotInfo = (user: string, bot: string): any => {
     return JSON.parse(readFile(`./data/${user}/${bot}/info.json`).toString())
 }
@@ -27,6 +33,13 @@ export const getBotInfo = (user: string, bot: string): any => {
 export const saveResponses = (user: string, bot: string, responses: any) => {
     let domainFile = getDomainFile(user, bot);
     domainFile.responses = responses;
+    let doc = dump(domainFile)
+    createFile(`./data/${user}/${bot}/domain.yml`, doc)
+}
+
+export const saveSlots = (user: string, bot: string, slots: any) => {
+    let domainFile = getDomainFile(user, bot);
+    domainFile.slots = slots;
     let doc = dump(domainFile)
     createFile(`./data/${user}/${bot}/domain.yml`, doc)
 }
@@ -51,6 +64,13 @@ export const saveStories = (user: string, bot: string, stories: any) => {
     s.stories = stories;
     let doc = dump(s);
     createFile(`./data/${user}/${bot}/data/stories.yml`, doc);
+}
+
+export const saveRules = (user: string, bot: string, rules: any) => {
+    let r = getRules(user, bot);
+    r.rules = rules;
+    let doc = dump(r);
+    createFile(`./data/${user}/${bot}/data/rules.yml`, doc);
 }
 
 export const removeStories = (user: string, bot: string, story: string) => {

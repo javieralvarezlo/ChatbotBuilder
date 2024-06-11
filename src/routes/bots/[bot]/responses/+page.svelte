@@ -21,8 +21,7 @@
 		PlusOutline
 	} from 'flowbite-svelte-icons';
 	import { enhance } from '$app/forms';
-	import {Toaster, toast} from 'svelte-french-toast'
-
+	import { Toaster, toast } from 'svelte-french-toast';
 
 	export let data: PageData;
 
@@ -71,7 +70,7 @@
 			throwError('Debes indicar un nombre');
 			return;
 		}
-		if (responses["utter_"+responseName]) {
+		if (responses['utter_' + responseName]) {
 			throwError('Ya existe una respuesta con ese nombre');
 			return;
 		}
@@ -79,7 +78,7 @@
 			throwError('Debes indicar un mensaje inicial');
 			return;
 		}
-		responses["utter_"+responseName] = [{ text: responseContent }];
+		responses['utter_' + responseName] = [{ text: responseContent }];
 		responseName = '';
 		responseContent = '';
 		throwSuccess('Respuesta creada correctamente');
@@ -87,12 +86,12 @@
 
 	const throwError = (message: string) => {
 		errorMessage = message;
-		toast.error(message)
+		toast.error(message);
 	};
 
 	const throwSuccess = (message: string) => {
 		successMessage = message;
-		toast.success(message)
+		toast.success(message);
 	};
 </script>
 
@@ -164,7 +163,8 @@
 					<div class="flex items-center space-x-4 rtl:space-x-reverse">
 						<div class="flex-1 min-w-0">
 							<p class="text-lg text-gray-700 group">
-								{r.split("utter_")[1]}
+								{r.split('utter_')[1]}
+
 								<button
 									on:click={() => {
 										if (edittingMessage) {
@@ -178,6 +178,16 @@
 									}}><PlusOutline class="group-hover:visible invisible" /></button
 								>
 							</p>
+							{#if r === 'utter_default'}
+								<p>Esta respuesta se ejecuta cuando no se reconoce la intención del usuario</p>
+							{/if}
+							{#if r === 'utter_unlikely'}
+								<p>
+									Esta respuesta se ejecuta cuando la intención reconocida no encaja en ningún
+									diálogo
+								</p>
+							{/if}
+
 							<ul
 								class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-600 border-0 dark:!bg-transparent"
 							>
@@ -186,7 +196,8 @@
 										class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg group"
 									>
 										<div class="group" id={r + re.text}>
-											{re.text}<button class="ml-2"
+											{re.text}<button
+												class="ml-2"
 												on:click={() => {
 													if (edittingMessage) {
 														throwError('Termina de editar el mensaje');
@@ -234,7 +245,7 @@
 													itemInput.hidden = !itemInput.hidden;
 													edittingMessage = '';
 													editMode = false;
-													throwSuccess("Mensaje editado correctamente");
+													throwSuccess('Mensaje editado correctamente');
 												}}
 											>
 												<Input type="text" bind:value={edittingMessage}>
@@ -266,7 +277,7 @@
 												itemInput.hidden = !itemInput.hidden;
 												creatingMessage = '';
 												createMode = false;
-												throwSuccess("Mensaje creado correctamente");
+												throwSuccess('Mensaje creado correctamente');
 											}}
 										>
 											<Input type="text" bind:value={creatingMessage}>
@@ -285,28 +296,30 @@
 						<div
 							class="group inline-flex items-start justify-start text-base font-semibold text-gray-900 dark:text-white h-auto"
 						>
-							<Button
-								outline={true}
-								class="!p-2"
-								size="lg"
-								on:click={() => {
-									if (edittingMessage) {
-										throwError('Termina de editar el mensaje');
-										return;
-									}
-									responseModal = true;
-									currentResponse = r;
-								}}
-							>
-								<TrashBinSolid class="w-5 h-5 text-primary-700 group-hover:text-white" />
-							</Button>
+							{#if r !== 'utter_default' && r !== 'utter_unlikely'}
+								<Button
+									outline={true}
+									class="!p-2"
+									size="lg"
+									on:click={() => {
+										if (edittingMessage) {
+											throwError('Termina de editar el mensaje');
+											return;
+										}
+										responseModal = true;
+										currentResponse = r;
+									}}
+								>
+									<TrashBinSolid class="w-5 h-5 text-primary-700 group-hover:text-white" />
+								</Button>
+							{/if}
 						</div>
 					</div>
 				</li>
 			{/each}
 		</ul>
 		<form class="flex flex-col space-y-6" method="post" use:enhance action="?/save">
-			<input type="text" hidden value={JSON.stringify(responses)} name="responses">
+			<input type="text" hidden value={JSON.stringify(responses)} name="responses" />
 			<Button color="green" type="submit">
 				<ArchiveArrowDownSolid class="w-3.5 h-3.5 me-2" /> Guardar
 			</Button>
