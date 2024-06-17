@@ -21,10 +21,11 @@
   <style>
     .intent {
       padding: 1rem;
-      background: #eee;
+      background: #ebc565;
       border-radius: 0.125rem;
       font-size: 0.7rem;
       border: 1px solid black;
+      
     }
   </style>
   

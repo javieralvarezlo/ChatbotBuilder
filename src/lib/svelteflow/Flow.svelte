@@ -21,6 +21,7 @@
 	import { onMount } from 'svelte';
 
 	const nodeData = useNodes();
+	const edgeData = useEdges()
 
 	export let intents: any[];
 	export let responses: any[];
@@ -109,8 +110,9 @@
 		let source = $nodeData.find((el) => el.id === connection.source);
 		let target = $nodeData.find((el) => el.id === connection.target);
 		return (
-			(source?.type === 'intent' && target?.type === 'action') ||
-			(source?.type === 'action' && target?.type === 'intent')
+			((source?.type === 'intent' && target?.type === 'action') ||
+			(source?.type === 'action' && target?.type === 'intent'))
+			&& (source?.type == 'intent' && $edgeData.filter(e => e.source === source.id).length === 0)
 		);
 	};
 </script>

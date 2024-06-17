@@ -31,7 +31,7 @@ export const userHasBot = (email: string | undefined, bot: string): boolean => {
 export const createBot = (email: string | undefined, bot: string, description: string) => {
     mkdirSync(`./${DATA_DIR}/${email}/${bot}`);
     createFile(`./${DATA_DIR}/${email}/${bot}/info.json`, JSON.stringify({name: bot, description, dialogs: []}));
-    cpSync(`./${DEFAULT_RASA}`, `/${DATA_DIR}/${email}/${bot}`, { recursive: true })
+    cpSync(`./${DEFAULT_RASA}/`, `./${DATA_DIR}/${email}/${bot}/`, { recursive: true })
 }
 
 export const deleteBot = (email: string | undefined, bot: string) => {

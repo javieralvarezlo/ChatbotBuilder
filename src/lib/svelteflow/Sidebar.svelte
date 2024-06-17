@@ -77,7 +77,7 @@
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				id={intent.name}
-				class="input-node node"
+				class="input-node node intent"
 				on:dragstart={(event) => onDragStart(event, { type: 'intent', name: intent.name })}
 				draggable={true}
 			>
@@ -91,7 +91,7 @@
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				id={action.name}
-				class="input-node node"
+				class="input-node node action"
 				on:dragstart={(event) => onDragStart(event, { type: 'action', name: action.name })}
 				draggable={true}
 			>
@@ -158,5 +158,13 @@
 		font-weight: 700;
 		border-radius: 3px;
 		cursor: grab;
+	}
+
+	.action {
+		background: #97dbf0;
+	}
+
+	.intent {
+		background: #ebc565;
 	}
 </style>
