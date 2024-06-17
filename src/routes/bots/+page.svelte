@@ -13,7 +13,12 @@
 	} from 'flowbite-svelte';
 	import type { PageData } from './$types';
 
-	import { TrashBinSolid, CheckCircleSolid, ExclamationCircleOutline } from 'flowbite-svelte-icons';
+	import {
+		TrashBinSolid,
+		CheckCircleSolid,
+		ExclamationCircleOutline,
+		DownloadSolid
+	} from 'flowbite-svelte-icons';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 
@@ -66,6 +71,18 @@
 						<p class="text-sm text-gray-500 truncate dark:text-gray-400">
 							{item.split(':@:')[1]}
 						</p>
+					</div>
+					<div
+						class="group inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+					>
+						<Button
+							outline={true}
+							class="!p-2 border-green-500 hover:bg-green-500"
+							size="lg"
+							href={`/api/bots/${item.split(':@:')[0]}`}
+						>
+							<DownloadSolid class="w-5 h-5 text-green-500 group-hover:text-white " />
+						</Button>
 					</div>
 					<div
 						class="group inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"

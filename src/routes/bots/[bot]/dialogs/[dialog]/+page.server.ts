@@ -47,9 +47,10 @@ export const actions = {
         const root = getRoot(nodes, edges);
         let caminos: any[] = [];
 
-        profundidad(edges, nodes, root, [], caminos)
+        profundidad(edges, nodes, root, [], caminos, type === "relaxed")
         let stories = getStories(emailToPath(event.locals.user?.email), event.params.bot).stories;
         let rules = getRules(emailToPath(event.locals.user?.email), event.params.bot).rules;
+
 
 
 
@@ -60,7 +61,7 @@ export const actions = {
                 let story = { story: event.params.dialog + i, steps: [] }
                 camino.map((step: { type: string; }) => {
                     let newStep = {}
-                    newStep[step.type] = step.type === "intent" ? step.name : `utter_${step.name}`
+                    newStep[step.type] = step.type === "intent" || step.type === "checkpoint" ? step.name : `utter_${step.name}`
                     story.steps.push(newStep)
                 })
                 newStories = [...newStories, story]
@@ -167,9 +168,17 @@ const getRoot = (nodes: any[], edges: any[]) => {
     })[0];
 }
 
-const profundidad = (edges: any, nodes: any, node: any, actual: any[], result: any[]) => {
+const profundidad = (edges: any, nodes: any, node: any, actual: any[], result: any[], isRelaxed: boolean) => {
+
+    const nodesWith2Kids = edges.filter((edge: { source: any; }) => edge.source === node.id)
 
     actual.push({ type: node.type, name: node.data.name });
+
+    if(nodesWith2Kids.length > 1 && isRelaxed) {
+        actual.push({type: "checkpoint", name: node.data.name+"_checkpoint"})
+        result.push([...actual]);
+        actual = [{type: "checkpoint", name: node.data.name+"_checkpoint"}]
+    }
 
     if (!edges.find((edge: { source: any; }) => edge.source === node.id)) {
         result.push([...actual]);

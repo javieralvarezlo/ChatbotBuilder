@@ -148,6 +148,7 @@
 		width: 100%;
 		align-items: center;
 		justify-content: space-evenly;
+		flex-wrap: wrap;
 	}
 
 	.node {
