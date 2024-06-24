@@ -46,8 +46,15 @@ export const saveSlots = (user: string, bot: string, slots: any) => {
 
 export const saveIntents = (user: string, bot: string, intents: any) => {
     let nluFile = getNluFile(user, bot);
+    let domainFile = getDomainFile(user, bot);
+
+    let domainIntents: any[] = [];
+    intents.map((i: { intent: any }) => { domainIntents.push(i.intent) })
+    domainFile.intents = domainIntents;
     nluFile.nlu = intents;
     let doc = dump(nluFile)
+    let domain = dump(domainFile)
+    createFile(`./data/${user}/${bot}/domain.yml`, domain)
     createFile(`./data/${user}/${bot}/data/nlu.yml`, doc)
 }
 

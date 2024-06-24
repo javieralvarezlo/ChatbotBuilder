@@ -1,0 +1,52 @@
+version: '3.0'
+
+services:
+  rasa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks: ['rasa-network']
+    ports:
+    - "5005:5005"
+    volumes:
+    - ".:/app/"
+    command:
+    - run
+    - --enable-api
+    - --cors
+    - "*"
+    - --endpoints
+    - endpoints.yml
+    depends_on:
+    - action_server
+    - postgres
+
+  action_server:
+    image: rasa/rasa-sdk:latest
+    networks: ['rasa-network']
+    ports:
+    - "5055:5055"
+    volumes:
+    - "./data/actions:/app/actions"
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - ./apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+      - POSTGRES_DB=rasa
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    networks: ['rasa-network']
+
+  web:
+    image: httpd:latest
+    ports:
+    - '8080:80'
+    volumes:
+    - ./client:/usr/local/apache2/htdocs
+
+networks: {rasa-network: {}}

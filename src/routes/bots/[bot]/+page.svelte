@@ -12,7 +12,7 @@
 	} from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	import Fa from 'svelte-fa';
-	import { faComment, faLightbulb, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+	import { faComment, faLightbulb, faQuoteRight, faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 	export let data: PageData;
 </script>
@@ -76,6 +76,21 @@
 							class="text-lg font-medium text-gray-900 truncate dark:text-white"
 						>
 							Diálogos
+						</a>
+					</div>
+				</div>
+			</li>
+			<li
+				class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg"
+			>
+				<div class="flex items-center space-x-4 rtl:space-x-reverse">
+					<Fa icon={faGamepad} class="flex-shrink-0 text-xl" />
+					<div class="flex-1 min-w-0">
+						<a
+							href={`/bots/${data.bot}/escapp`}
+							class="text-lg font-medium text-gray-900 truncate dark:text-white"
+						>
+							Opciones de Escapp
 						</a>
 					</div>
 				</div>

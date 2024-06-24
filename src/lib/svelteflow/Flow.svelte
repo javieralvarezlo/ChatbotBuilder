@@ -112,7 +112,7 @@
 		return (
 			((source?.type === 'intent' && target?.type === 'action') ||
 			(source?.type === 'action' && target?.type === 'intent'))
-			&& (source?.type == 'intent' && $edgeData.filter(e => e.source === source.id).length === 0)
+			&& ((source?.type == 'action' && $edgeData.filter(e => e.source === source.id).length === 0) || source?.type == 'intent')
 		);
 	};
 </script>

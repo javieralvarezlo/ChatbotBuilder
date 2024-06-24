@@ -73,7 +73,9 @@ export const actions = {
             let domain = getDomainFile(emailToPath(event.locals.user?.email), event.params.bot)
             let intents = nodes.filter(n => n.type === "intent")
 
-            Object.keys(domain.slots).map(key => {
+            domain.slots = domain.slots || {}
+
+            Object.keys(domain.slots || {}).map(key => {
                 if (key.startsWith(event.params.dialog.replace(" ", "_"))) {
                     delete domain.slots[key]
                 }
@@ -96,56 +98,75 @@ export const actions = {
                 }
             })
 
-
+            rules = rules || []
             rules = rules.filter(r => !r.rule.startsWith(event.params.dialog))
 
             caminos.map((camino, nCamino) => {
                 camino.map((paso, nPaso) => {
-                    if (nPaso % 2 === 0 && nPaso !== 0) {
-                        let newRule = {
-                            rule: event.params.dialog + "_" + camino[nPaso].name,
-                            condition: [
-                                {
-                                    slot_was_set: [
-                                        {
-                                            [`${event.params.dialog.replace(" ", "_")}_${camino[nPaso - 2].name}_flag`]: true
-                                        }
-                                    ]
-                                }
-                            ],
-                            steps: [
-                                {
-                                    intent: camino[nPaso].name
-                                },
-                                {
-                                    action: "utter_" + camino[nPaso + 1].name
-                                }
-                            ]
-                        };
+                    if (nPaso % 2 === 0) {
+                        if (nPaso !== 0) {
+                            let newRule = {
+                                rule: event.params.dialog + "_" + camino[nPaso].name,
+                                condition: [
+                                    {
+                                        slot_was_set: [
+                                            {
+                                                [`${event.params.dialog.replace(" ", "_")}_${camino[nPaso - 2].name}_flag`]: true
+                                            }
+                                        ]
+                                    }
+                                ],
+                                steps: [
+                                    {
+                                        intent: camino[nPaso].name
+                                    },
+                                    {
+                                        action: "utter_" + camino[nPaso + 1].name
+                                    }
+                                ]
+                            };
 
-                        let newBadRule = {
-                            rule: event.params.dialog + "_" + camino[nPaso].name +"_mal",
-                            condition: [
-                                {
-                                    slot_was_set: [
-                                        {
-                                            [`${event.params.dialog.replace(" ", "_")}_${camino[nPaso - 2].name}_flag`]: false
-                                        }
-                                    ]
-                                }
-                            ],
-                            steps: [
-                                {
-                                    intent: camino[nPaso].name
-                                },
-                                {
-                                    action: "action_default_fallback"
-                                }
-                            ]
-                        };
+                            let newBadRule = {
+                                rule: event.params.dialog + "_" + camino[nPaso].name + "_mal",
+                                condition: [
+                                    {
+                                        slot_was_set: [
+                                            {
+                                                [`${event.params.dialog.replace(" ", "_")}_${camino[nPaso - 2].name}_flag`]: false
+                                            }
+                                        ]
+                                    }
+                                ],
+                                steps: [
+                                    {
+                                        intent: camino[nPaso].name
+                                    },
+                                    {
+                                        action: "action_default_fallback"
+                                    }
+                                ]
+                            };
 
-                        rules.push(newRule)
-                        rules.push(newBadRule)
+
+                            rules.push(newRule)
+                            rules.push(newBadRule)
+
+                        } else {
+                            let newRule = {
+                                rule: event.params.dialog + "_" + camino[nPaso].name + "_base",
+                                steps: [
+                                    {
+                                        intent: camino[nPaso].name
+                                    },
+                                    {
+                                        action: "utter_" + camino[nPaso + 1].name
+                                    }
+                                ]
+                            };
+
+                            rules.push(newRule)
+                        }
+
 
                     }
 
@@ -174,10 +195,10 @@ const profundidad = (edges: any, nodes: any, node: any, actual: any[], result: a
 
     actual.push({ type: node.type, name: node.data.name });
 
-    if(nodesWith2Kids.length > 1 && isRelaxed) {
-        actual.push({type: "checkpoint", name: node.data.name+"_checkpoint"})
+    if (nodesWith2Kids.length > 1 && isRelaxed) {
+        actual.push({ type: "checkpoint", name: node.data.name + "_checkpoint" })
         result.push([...actual]);
-        actual = [{type: "checkpoint", name: node.data.name+"_checkpoint"}]
+        actual = [{ type: "checkpoint", name: node.data.name + "_checkpoint" }]
     }
 
     if (!edges.find((edge: { source: any; }) => edge.source === node.id)) {
