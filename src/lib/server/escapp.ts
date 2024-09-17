@@ -8,9 +8,9 @@ export const saveEscapp = (user: string, bot: string, data: Object) => {
     botInfo.escapp.solution = data.solution;
     botInfo.escapp.actionOptions = data.action;
     const newData = `ESCAPP_OPTIONS=${JSON.stringify(data)}`
-    let file = readFile(`./data/${user}/${bot}/client/assets/index-F-HFJ1Yf.js`).toString();
+    let file = readFile(`./data/${user}/${bot}/client/assets/index-CxZTfXIx.js`).toString();
     file = file.replace(/ESCAPP_OPTIONS={}/g, newData);
     file = file.replace('ESCAPP({endpoint:""', `ESCAPP({endpoint:"${data.url}"`)
-    createFile(`./data/${user}/${bot}/client/assets/index-F-HFJ1Yf.js`, file)
+    createFile(`./data/${user}/${bot}/client/assets/index-CxZTfXIx.js`, file)
     createFile(`./data/${user}/${bot}/info.json`, JSON.stringify(botInfo))
 }

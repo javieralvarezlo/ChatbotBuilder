@@ -72,6 +72,7 @@
 		"node-cmd": "^5.0.0",
 		"node-run-cmd": "^1.0.1",
 		"oslo": "^1.2.0",
+		"sharp": "^0.33.5",
 		"svelte-fa": "^4.0.2",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-notifications": "^0.9.98",

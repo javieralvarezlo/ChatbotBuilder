@@ -97,6 +97,10 @@ export const createBot = (email: string | undefined, bot: string, description: s
             solution: "solución",
             url: "https://escapp.etsisi.upm.es/api/escapeRooms/147/",
             actionOptions: []
+        }, customization: {
+            name: "",
+            theme: "default",
+            inspector: ""
         }
     }));
     cpSync(`./${DEFAULT_RASA}/`, `./${DATA_DIR}/${email}/${bot}/`, { recursive: true })

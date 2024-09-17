@@ -56,7 +56,7 @@
 					<BreadcrumbItem href="/bots" home>Home</BreadcrumbItem>
 					<BreadcrumbItem href="/bots">Bots</BreadcrumbItem>
 					<BreadcrumbItem><a href={`/bots/${data.bot}`}>{data.bot}</a></BreadcrumbItem>
-					<BreadcrumbItem>Respuestas</BreadcrumbItem>
+					<BreadcrumbItem>Escapp</BreadcrumbItem>
 				</Breadcrumb>
 			</div>
 
@@ -103,9 +103,7 @@
 			</Button>
 		</form>
 	</Card>
-	<Card padding="xl" size="sm" class="h-min mb-2">
-		<div class="flex flex-col space-y-6">
-			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Crea una respuesta</h3>
-		</div>
+	<Card padding="xl" size="sm" class="h-min mb-2 bg-transparent border-none shadow-none">
+
 	</Card>
 </div>
