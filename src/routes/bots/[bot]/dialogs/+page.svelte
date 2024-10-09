@@ -95,10 +95,10 @@
 				Diálogos del bot {data.bot}
 			</h5>
 			<p>
-				Las intenciones son las acciones del usuario que el bot detecta y en base a las cuales toma
-				decisiones sobre qué Respuesta dar. Para cada intención hay que definir múltiples ejemplos
-				en lenguaje natural de cómo puede ser expresado dicho mensaje. Se recomiendan entre 5 y 20
-				ejemplos por Intención.
+				Los diálogos son los flujos de interacción del bot con el usuario final. A la hora de crear
+				un diálogo puedes diferenciar dos tipos: Relajado y Estricto. El primer tipo ofrece un
+				enfoque más conversacional y flexible mientras que el segundo requiere que el bot ejecute
+				todos los pasos de dicho camino.
 			</p>
 		</div>
 		<ul

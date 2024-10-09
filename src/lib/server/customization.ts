@@ -10,6 +10,7 @@ export const saveCustomization = async (user: string, bot: string, data: Object)
     }
     botInfo.customization.name = data.name;
     botInfo.customization.theme = data.theme;
+    botInfo.customization.inspector = data.inspector
     const newData = `CUSTOMIZATION_OPTIONS=${JSON.stringify(data)}`
     let file = readFile(`./data/${user}/${bot}/client/assets/index-CxZTfXIx.js`).toString();
     file = file.replace(/CUSTOMIZATION_OPTIONS={}/g, newData);

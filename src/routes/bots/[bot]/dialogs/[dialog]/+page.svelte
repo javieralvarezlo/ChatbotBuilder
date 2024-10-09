@@ -45,12 +45,7 @@
 			<h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mt-4 w-full mb-4">
 				Diálogo {data.dialog}
 			</h5>
-			<p>
-				Las intenciones son las acciones del usuario que el bot detecta y en base a las cuales toma
-				decisiones sobre qué Respuesta dar. Para cada intención hay que definir múltiples ejemplos
-				en lenguaje natural de cómo puede ser expresado dicho mensaje. Se recomiendan entre 5 y 20
-				ejemplos por Intención.
-			</p>
+
 		</div>
 		<SvelteFlowProvider>
 			<Flow {intents} {responses} nodesProp={nodes} edgesProp={edges} {t}/>

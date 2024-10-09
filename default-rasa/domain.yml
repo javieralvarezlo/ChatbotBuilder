@@ -2,6 +2,11 @@ version: '3.1'
 intents:
   - saludar
 responses:
+  utter_default:
+    - text: "No entiendo qué quieres decir con este mensaje"
+    - text: "¿Puedes repetirmelo de otra forma? No te he entendido"
+  utter_unlikely:
+    - text: "No sé qué pretendes con este mensaje"
   utter_saluda:
     - text: hola pesicola
 session_config:

@@ -25,9 +25,12 @@
 	import { enhance } from '$app/forms';
 	import { Toaster, toast } from 'svelte-french-toast';
 
-	import profile from '../../../../../default-rasa/client/assets/perfil-B2gM2GLS.jpg';
 
 	export let data: PageData;
+
+	$: profile = '../../../../../data/'+emailToPath(data.user?.email)+ '/' + data.bot + '/client/assets/perfil-B2gM2GLS.jpg';
+
+	import { emailToPath } from '$lib/services/utils';
 
 	let selectedTheme: string = data.botInfo.customization.theme;
 	let themes = data.themes;
