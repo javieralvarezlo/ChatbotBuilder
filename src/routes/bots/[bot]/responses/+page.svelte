@@ -196,7 +196,9 @@
 										class="py-2 px-4 w-full text-sm font-medium list-none first:rounded-t-lg last:rounded-b-lg group"
 									>
 										<div class="group" id={r + re.text}>
-											{re.text}<button
+											{re.text}
+											{#if responses[r].length > 1}
+											<button
 												class="ml-2"
 												on:click={() => {
 													if (edittingMessage) {
@@ -208,6 +210,7 @@
 													currentResponse = r;
 												}}><TrashBinOutline class="group-hover:visible invisible" /></button
 											>
+											{/if}
 											<button
 												on:click={() => {
 													if (edittingMessage) {
