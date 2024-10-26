@@ -1,5 +1,6 @@
 import { saveResponses } from '$lib/server/rasa';
 import { emailToPath } from '$lib/services/utils';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from "./$types";
 
@@ -21,5 +22,6 @@ export const actions = {
         const responses = JSON.parse(formData.get("responses") );
         console.log("Guardando")
         saveResponses(emailToPath(event.locals.user?.email), event.params.bot, responses)
+        return redirect(301, `/bots/${event.params.bot}`)
     }
 } satisfies Actions;

@@ -1,5 +1,6 @@
 import { saveIntents } from '$lib/server/rasa';
 import { emailToPath } from '$lib/services/utils';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from "./$types";
 
@@ -30,6 +31,7 @@ export const actions = {
             intent.examples = examples
         })
         saveIntents(emailToPath(event.locals.user?.email), event.params.bot, intents)
+        return redirect(301, `/bots/${event.params.bot}`)
     }
 } satisfies Actions;
 
