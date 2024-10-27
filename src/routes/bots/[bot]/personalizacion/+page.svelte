@@ -28,9 +28,7 @@
 
 	export let data: PageData;
 
-	$: profile = '../../../../../data/'+emailToPath(data.user?.email)+ '/' + data.bot + '/client/assets/perfil-B2gM2GLS.jpg';
-
-	import { emailToPath } from '$lib/services/utils';
+	console.log(data.botImage)
 
 	let selectedTheme: string = data.botInfo.customization.theme;
 	let themes = data.themes;
@@ -116,7 +114,7 @@
 			<div class="mb-6">
 				<Label for="profile" class="block mb-4 text-md"
 					>Foto de perfil del Bot
-					<img src={profile} alt="Foto de perfil" class="size-64" id="profileImage" />
+					<img src={`data:image/png;base64,${data.botImage}`} alt="Foto de perfil" class="size-64" id="profileImage" />
 
 					<Fileupload
 						{...fileuploadprops}
@@ -129,8 +127,6 @@
 					/>
 				</Label>
 			</div>
-
-			<input hidden name="responses" value={JSON.stringify(responses)} />
 
 			<Button color="green" type="submit">
 				<ArchiveArrowDownSolid class="w-3.5 h-3.5 me-2" /> Guardar

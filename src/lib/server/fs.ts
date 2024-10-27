@@ -1,4 +1,4 @@
-import { mkdirSync, existsSync, readdirSync, rmdir, rmdirSync, cpSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdirSync, existsSync, readdirSync, rmdir, rmdirSync, cpSync, writeFileSync, readFileSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const DATA_DIR = `data`;
@@ -127,4 +127,8 @@ export const botsWithDescription = (user: string) => {
     })
 
     return { bots, botStrings };
+}
+
+export const getBotImage = (user: string, bot: string): string => {
+    return readFileSync(`${process.cwd()}/data/${user}/${bot}/client/assets/perfil-B2gM2GLS.jpg`, { encoding: 'base64'}).toString()
 }

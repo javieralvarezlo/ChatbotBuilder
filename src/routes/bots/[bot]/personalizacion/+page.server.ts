@@ -4,18 +4,21 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from "./$types";
 import { saveCustomization } from '$lib/server/customization';
+import { getBotImage } from '$lib/server/fs';
 
 
 export const load: PageServerLoad = async ({ locals, params, parent }) => {
     const { bot, domainFile, botInfo } = await parent();
     let responses = domainFile.responses;
     let themes = [{ value: "default", name: "Por defecto" }, { value: "whatsapp", name: "WhatsApp" }]
+    const botImage = getBotImage(emailToPath(locals.user?.email), bot)
 
     return {
         bot,
         responses,
         botInfo,
-        themes
+        themes,
+        botImage
     }
 }
 
