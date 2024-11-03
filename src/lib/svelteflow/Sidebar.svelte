@@ -85,7 +85,7 @@
 			</div>
 		{/each}
 	</div>
-	<div class="label"><p class="text-xl dark:text-white">Acciones</p></div>
+	<div class="label"><p class="text-xl dark:text-white">Respuestas</p></div>
 	<div class="nodes-container">
 		{#each responses as action}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
