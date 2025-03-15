@@ -3,7 +3,6 @@
 
     const data = useSvelteFlow();
     function click() {
-        console.log(data)
     }
 </script>
 
