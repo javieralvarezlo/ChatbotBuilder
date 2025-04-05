@@ -28,7 +28,6 @@
 
 	export let data: PageData;
 
-	console.log(data.botImage)
 
 	let selectedTheme: string = data.botInfo.customization.theme;
 	let themes = data.themes;

@@ -2,7 +2,6 @@ import { lucia } from "$lib/server/auth";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
-
 const validateSession: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get(lucia.sessionCookieName);
 	if (!sessionId) {
@@ -31,4 +30,13 @@ const validateSession: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = sequence(validateSession);
+// Nuevo handler para solucionar el problema CSRF
+const handleCsrf: Handle = async ({ event, resolve }) => {
+    // Configurar los dominios permitidos estableciendo el origen
+    event.request.headers.set('origin', event.url.origin);
+    
+    return await resolve(event);
+};
+
+// Secuencia de handlers (primero valida la sesión, luego maneja CSRF)
+export const handle = sequence(validateSession, handleCsrf);

@@ -18,7 +18,6 @@ export const saveCustomization = async (user: string, bot: string, data: Object)
     createFile(`./data/${user}/${bot}/info.json`, JSON.stringify(botInfo))
 
     if(data.profile.size !== 0) {
-        console.log(data.profile)
         const arrayBuffer = await data.profile.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
         const newBuffer = await sharp(buffer).jpeg().toBuffer()

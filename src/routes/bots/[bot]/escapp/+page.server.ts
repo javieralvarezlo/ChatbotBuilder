@@ -33,8 +33,6 @@ export const actions = {
         const action = formData.get("action")
         const responses = JSON.parse(formData.get("responses"))
         let actionOptions: any[] = []
-        console.log(puzzle, url, solution, action)
-        console.log("Guardando")
         responses[action].map((res: { text: any; }) => {
             actionOptions = [...actionOptions, res.text]
         })
