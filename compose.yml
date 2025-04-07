@@ -11,7 +11,7 @@ services:
         target: /app/data
       - type: bind
         source: ./default-rasa
-        target: /default-rasa
+        target: /app/default-rasa
     env_file:
       - ./.env
     environment:

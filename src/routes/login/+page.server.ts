@@ -30,7 +30,7 @@ export const actions = {
 		}
 
 		if(!dirExists(`/data/${emailToPath(email)}`)) {
-			createUserFolder(`/data/${emailToPath(email)}`);
+			createUserFolder(`${emailToPath(email)}`);
 		}
 
 		const session = await createSession(existingUser.id)
